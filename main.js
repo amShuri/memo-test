@@ -67,8 +67,8 @@ function generateTiles() {
     const $tileWrapper = document.createElement('div');
     const $tile = document.createElement('button');
 
-    $tileWrapper.classList.add('col', 'tile');
-    $tile.classList.add('hidden-tile', duplicatedTileColors[i]);
+    $tileWrapper.classList.add('tile-wrapper');
+    $tile.classList.add('tile', 'hidden-tile', duplicatedTileColors[i]);
 
     $gameboard.appendChild($tileWrapper);
     $tileWrapper.appendChild($tile);
