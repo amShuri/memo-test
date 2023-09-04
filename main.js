@@ -2,36 +2,51 @@ const $gameboard = document.querySelector('#gameboard');
 const gameTiles = [];
 
 $gameboard.onclick = function (e) {
-  handleUserTileClick(e);
-
+  handleTileClick(e);
   if (gameTiles.length == 2) {
     disableUserInput();
     handleTilePair(gameTiles[0], gameTiles[1]);
     setTimeout(() => {
+      resetTileSelection(gameTiles);
       enableUserInput();
-      gameTiles.splice(0);
     }, 1000);
   }
 };
 
-function handleUserTileClick(e) {
-  if (e.target.tagName != 'BUTTON' || e.target == gameTiles[0]) return;
-  e.target.classList.remove('hidden-tile');
+function handleTileClick(e) {
+  if (e.target.tagName != 'BUTTON' || gameTiles.includes(e.target)) return;
+  showTile(e.target);
   gameTiles.push(e.target);
+}
+
+function showTile(tile) {
+  tile.classList.remove('hidden-tile');
 }
 
 function handleTilePair(tileOne, tileTwo) {
   if (tileOne.className == tileTwo.className) {
-    setTimeout(() => {
-      tileOne.classList.add('matched-tile');
-      tileTwo.classList.add('matched-tile');
-    }, 1000);
+    removeTile(tileOne);
+    removeTile(tileTwo);
   } else {
-    setTimeout(() => {
-      tileOne.classList.add('hidden-tile');
-      tileTwo.classList.add('hidden-tile');
-    }, 1000);
+    hideTile(tileOne);
+    hideTile(tileTwo);
   }
+}
+
+function removeTile(tile) {
+  setTimeout(() => {
+    tile.classList.add('matched-tile');
+  }, 1000);
+}
+
+function hideTile(tile) {
+  setTimeout(() => {
+    tile.classList.add('hidden-tile');
+  }, 1000);
+}
+
+function resetTileSelection(tiles) {
+  tiles.splice(0);
 }
 
 function disableUserInput() {
@@ -44,28 +59,28 @@ function enableUserInput() {
 
 function generateTiles() {
   const pairOfTiles = 6;
-  const tileColors = ['blue', 'green', 'orange', 'pink', 'purple', 'red'];
-  const tempArray = [...tileColors, ...tileColors];
-  shuffleArray(tempArray);
+  const uniqueTileColors = ['blue', 'green', 'orange', 'pink', 'purple', 'red'];
+  const duplicatedTileColors = [...uniqueTileColors, ...uniqueTileColors];
+  shuffleTileColors(duplicatedTileColors);
 
   for (let i = 0; i < pairOfTiles * 2; i += 1) {
     const $tileWrapper = document.createElement('div');
     const $tile = document.createElement('button');
 
     $tileWrapper.classList.add('col', 'tile');
-    $tile.classList.add('hidden-tile', tempArray[i]);
+    $tile.classList.add('hidden-tile', duplicatedTileColors[i]);
 
     $gameboard.appendChild($tileWrapper);
     $tileWrapper.appendChild($tile);
   }
 }
 
-function shuffleArray(array) {
-  for (let i = 0; i < array.length; i++) {
+function shuffleTileColors(tileColors) {
+  for (let i = 0; i < tileColors.length; i++) {
     const randomIndex = Math.floor(Math.random() * (i + 1));
-    const tempIndex = array[i];
-    array[i] = array[randomIndex];
-    array[randomIndex] = tempIndex;
+    const tempIndex = tileColors[i];
+    tileColors[i] = tileColors[randomIndex];
+    tileColors[randomIndex] = tempIndex;
   }
 }
 
