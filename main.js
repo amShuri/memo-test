@@ -1,29 +1,33 @@
 const $gameboard = document.querySelector('#gameboard');
 const gameTiles = [];
+let clickedTiles = 0;
 
 $gameboard.onclick = function (e) {
   handleTileClick(e);
-  if (gameTiles.length == 2) {
-    disableUserInput();
-    handleTilePair(gameTiles[0], gameTiles[1]);
-    setTimeout(() => {
-      resetTileSelection(gameTiles);
-      enableUserInput();
-    }, 1000);
-  }
 };
 
 function handleTileClick(e) {
   if (e.target.tagName != 'BUTTON' || gameTiles.includes(e.target)) return;
   showTile(e.target);
   gameTiles.push(e.target);
+  clickedTiles++;
+
+  if (clickedTiles == 2) {
+    disableUserInput();
+    compareTiles(gameTiles[0], gameTiles[1]);
+    setTimeout(() => {
+      resetTileSelection(gameTiles);
+      enableUserInput();
+      clickedTiles = 0;
+    }, 1000);
+  }
 }
 
 function showTile(tile) {
   tile.classList.remove('hidden-tile');
 }
 
-function handleTilePair(tileOne, tileTwo) {
+function compareTiles(tileOne, tileTwo) {
   if (tileOne.className == tileTwo.className) {
     removeTile(tileOne);
     removeTile(tileTwo);
@@ -59,28 +63,28 @@ function enableUserInput() {
 
 function generateTiles() {
   const pairOfTiles = 6;
-  const uniqueTileColors = ['blue', 'green', 'orange', 'pink', 'purple', 'red'];
-  const duplicatedTileColors = [...uniqueTileColors, ...uniqueTileColors];
-  shuffleTileColors(duplicatedTileColors);
+  const uniqueColors = ['blue', 'green', 'orange', 'pink', 'purple', 'red'];
+  const duplicatedColors = [...uniqueColors, ...uniqueColors];
+  shuffleColors(duplicatedColors);
 
   for (let i = 0; i < pairOfTiles * 2; i += 1) {
     const $tileWrapper = document.createElement('div');
     const $tile = document.createElement('button');
 
     $tileWrapper.classList.add('tile-wrapper');
-    $tile.classList.add('tile', 'hidden-tile', duplicatedTileColors[i]);
+    $tile.classList.add('tile', 'hidden-tile', duplicatedColors[i]);
 
     $gameboard.appendChild($tileWrapper);
     $tileWrapper.appendChild($tile);
   }
 }
 
-function shuffleTileColors(tileColors) {
-  for (let i = 0; i < tileColors.length; i++) {
+function shuffleColors(colors) {
+  for (let i = 0; i < colors.length; i++) {
     const randomIndex = Math.floor(Math.random() * (i + 1));
-    const tempIndex = tileColors[i];
-    tileColors[i] = tileColors[randomIndex];
-    tileColors[randomIndex] = tempIndex;
+    const tempIndex = colors[i];
+    colors[i] = colors[randomIndex];
+    colors[randomIndex] = tempIndex;
   }
 }
 
