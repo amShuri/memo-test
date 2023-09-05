@@ -1,6 +1,7 @@
 const $gameboard = document.querySelector('#gameboard');
 const gameTiles = [];
 let clickedTiles = 0;
+let turnsPlayed = 0;
 
 $gameboard.onclick = function (e) {
   handleTileClick(e);
@@ -13,13 +14,15 @@ function handleTileClick(e) {
   clickedTiles++;
 
   if (clickedTiles == 2) {
+    turnsPlayed += 1;
     disableUserInput();
     compareTiles(gameTiles[0], gameTiles[1]);
     setTimeout(() => {
       resetTileSelection(gameTiles);
+      checkGameStatus();
       enableUserInput();
       clickedTiles = 0;
-    }, 1000);
+    }, 1500);
   }
 }
 
@@ -39,7 +42,7 @@ function compareTiles(tileOne, tileTwo) {
 
 function removeTile(tile) {
   setTimeout(() => {
-    tile.classList.add('matched-tile');
+    tile.remove();
   }, 1500);
 }
 
@@ -59,6 +62,16 @@ function disableUserInput() {
 
 function enableUserInput() {
   document.querySelectorAll('.hidden-tile').forEach((tile) => (tile.disabled = false));
+}
+
+function checkGameStatus() {
+  const $tiles = document.querySelectorAll('.tile');
+  if ($tiles.length == 0) {
+    const $gameoverMsg = document.querySelector('#gameover');
+    $gameoverMsg.querySelector('span').textContent = turnsPlayed;
+    $gameoverMsg.classList.remove('d-none');
+    $gameboard.classList.add('d-none');
+  }
 }
 
 function generateTiles() {

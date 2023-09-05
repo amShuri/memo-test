@@ -50,8 +50,3 @@
 .hidden-tile {
   background-color: #737373;
 }
-
-.matched-tile {
-  background-color: #fff;
-  visibility: hidden;
-}
