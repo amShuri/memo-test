@@ -20,6 +20,7 @@
   height: 100%;
   opacity: 0.7;
   border-radius: 4px;
+  transition: ease-in-out 500ms;
 }
 
 .blue {
@@ -51,5 +52,6 @@
 }
 
 .matched-tile {
+  background-color: #fff;
   visibility: hidden;
 }

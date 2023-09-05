@@ -40,13 +40,13 @@ function compareTiles(tileOne, tileTwo) {
 function removeTile(tile) {
   setTimeout(() => {
     tile.classList.add('matched-tile');
-  }, 1000);
+  }, 1500);
 }
 
 function hideTile(tile) {
   setTimeout(() => {
     tile.classList.add('hidden-tile');
-  }, 1000);
+  }, 1500);
 }
 
 function resetTileSelection(tiles) {
