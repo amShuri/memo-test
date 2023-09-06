@@ -1,72 +1,69 @@
 const $gameboard = document.querySelector('#gameboard');
-const gameTiles = [];
-let clickedTiles = 0;
+const activeTiles = [];
 let turnsPlayed = 0;
 
 $gameboard.onclick = function (e) {
-  handleTileClick(e);
+  const $activeTile = e.target;
+  if (!$activeTile.classList.contains('hidden-tile')) return;
+  handleTileClick($activeTile);
 };
 
-function handleTileClick(e) {
-  if (e.target.tagName != 'BUTTON' || gameTiles.includes(e.target)) return;
-  showTile(e.target);
-  gameTiles.push(e.target);
-  clickedTiles++;
+function handleTileClick($tile) {
+  showTile($tile);
+  activeTiles.push($tile);
 
-  if (clickedTiles == 2) {
-    turnsPlayed += 1;
+  if (activeTiles.length == 2) {
+    turnsPlayed++;
     disableUserInput();
-    compareTiles(gameTiles[0], gameTiles[1]);
+    compareTiles(activeTiles[0], activeTiles[1]);
     setTimeout(() => {
-      resetTileSelection(gameTiles);
-      checkGameStatus();
+      resetActiveTiles(activeTiles);
       enableUserInput();
-      clickedTiles = 0;
     }, 1500);
   }
 }
 
-function showTile(tile) {
-  tile.classList.remove('hidden-tile');
+function showTile($tile) {
+  $tile.classList.remove('hidden-tile');
 }
 
-function compareTiles(tileOne, tileTwo) {
-  if (tileOne.className == tileTwo.className) {
-    removeTile(tileOne);
-    removeTile(tileTwo);
+function compareTiles($tileOne, $tileTwo) {
+  if ($tileOne.className == $tileTwo.className) {
+    removeTile($tileOne);
+    removeTile($tileTwo);
   } else {
-    hideTile(tileOne);
-    hideTile(tileTwo);
+    hideTile($tileOne);
+    hideTile($tileTwo);
   }
 }
 
-function removeTile(tile) {
+function removeTile($tile) {
   setTimeout(() => {
-    tile.remove();
+    $tile.remove();
+    handleGameOver();
   }, 1500);
 }
 
-function hideTile(tile) {
+function hideTile($tile) {
   setTimeout(() => {
-    tile.classList.add('hidden-tile');
+    $tile.classList.add('hidden-tile');
   }, 1500);
 }
 
-function resetTileSelection(tiles) {
+function resetActiveTiles(tiles) {
   tiles.splice(0);
 }
 
 function disableUserInput() {
-  document.querySelectorAll('.hidden-tile').forEach((tile) => (tile.disabled = true));
+  document.querySelectorAll('.hidden-tile').forEach(($tile) => ($tile.disabled = true));
 }
 
 function enableUserInput() {
-  document.querySelectorAll('.hidden-tile').forEach((tile) => (tile.disabled = false));
+  document.querySelectorAll('.hidden-tile').forEach(($tile) => ($tile.disabled = false));
 }
 
-function checkGameStatus() {
-  const $tiles = document.querySelectorAll('.tile');
-  if ($tiles.length == 0) {
+function handleGameOver() {
+  if (document.querySelectorAll('.tile').length == 0) {
     const $gameoverMsg = document.querySelector('#gameover');
     $gameoverMsg.querySelector('span').textContent = turnsPlayed;
     $gameoverMsg.classList.remove('d-none');
